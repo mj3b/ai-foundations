@@ -30,7 +30,7 @@ import numpy as np
 class TextGenerator(keras.callbacks.Callback):
   """A callback to generate text from a trained model.
 
-    1. Feed a starting prompt to the model.
+    1. Feed an initial prompt to the model.
     2. Predict probabilities for the next token.
     3. Sample the next token and add it to the input for the next prediction.
 

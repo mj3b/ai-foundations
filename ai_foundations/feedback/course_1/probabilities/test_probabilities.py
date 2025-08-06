@@ -28,7 +28,7 @@ import numpy as np
 
 def test_probabilities(
     candidate_words: List[str], learner_probs: List[float]
-) -> None:
+):
   """Tests if `learner_probs` is a proper probability distribution.
 
   Conditions checked (in order):
@@ -47,9 +47,9 @@ def test_probabilities(
     if len(candidate_words) != len(learner_probs):
       raise ValueError(
           "Mismatch between words and probabilities.",
-          f"You supplied {len(learner_probs)} probabilities for "
-          f"{len(candidate_words)} words. "
-          "Make sure there is exactly one probability per word.",
+          f"You supplied {len(learner_probs)} probabilities for"
+          f" {len(candidate_words)} words."
+          " Make sure there is exactly one probability per word.",
       )
 
     # 2. Check for negative probabilities.
@@ -68,8 +68,8 @@ def test_probabilities(
       offending_str = ", ".join(str(p) for p in offending)
       raise ValueError(
           "Probabilities must not exceed 1.",
-          f"The following value(s) are > 1: {offending_str}. "
-          "Replace the value(s) > 1 with numbers in the range [0, 1].",
+          f"The following value(s) are > 1: {offending_str}."
+          " Replace the value(s) > 1 with numbers in the range [0, 1].",
       )
 
     # 4. Check if probabilities sum to 1.
@@ -77,8 +77,8 @@ def test_probabilities(
     if not np.isclose(current_sum, 1.0):
       raise ValueError(
           "Probabilities must sum to 1.",
-          f"The sum of your probabilities is: {current_sum:.4f}. "
-          "Please adjust the numbers and try again.",
+          f"The sum of your probabilities is: {current_sum:.4f}."
+          " Please adjust the numbers and try again.",
       )
 
   except ValueError as e:

@@ -15,22 +15,23 @@
 
 """A utility function for a tokenizer exercise.
 
-This module provides a function to test a learner's custom tokenizer, checking
-its internal vocabulary and the consistency of its encode and decode methods.
+This module provides a function to test a learner's custom simple word
+tokenizer, checking its internal vocabulary and the consistency of its encode
+and decode methods.
 """
 
 from typing import Any, List
 from ai_foundations.feedback.utils import render_feedback
 
 
-def test_tokenizer_functionality(
+def test_simple_word_tokenizer(
     tokenizer: Any, vocabulary: List[str], train_dataset: List[str]
 ):
-  """Tests the tokenizer's vocabulary and its encode/decode methods.
+  """Tests the simple word tokenizer's vocabulary and its encode/decode methods.
 
   This function performs two checks:
-  1. It validates that the tokenizer's internal vocabulary matches the expected
-     vocabulary.
+  1. It validates that the simple word tokenizer's internal vocabulary matches
+     the expected vocabulary.
   2. It ensures that encoding a sentence and then decoding it results in the
      original text.
 
@@ -45,7 +46,7 @@ def test_tokenizer_functionality(
     This test checks two things:<br><br>
     1. <b>Vocabulary Check:</b> It verifies that the vocabulary stored inside
        your tokenizer (<code>tokenizer.vocabulary</code>) is the same as the
-       original <code>vocab</code> list.<br>
+       original <code>vocabulary</code> list.<br>
     2. <b>Encode/Decode Check:</b> It tests if encoding a sentence and then
        immediately decoding it returns the original sentence. This ensures
        that your <code>encode</code> and <code>decode</code> methods work
@@ -55,21 +56,20 @@ def test_tokenizer_functionality(
   try:
     if sorted(tokenizer.vocabulary) != sorted(vocabulary):
       raise ValueError(
-          "The tokenizer's vocabulary does not match the expected"
-          " vocabulary."
+          "The tokenizer's vocabulary does not match the expected vocabulary."
       )
 
     if (
-        tokenizer.decode(tokenizer.encode(train_dataset[0]))
-        != train_dataset[0]
+        tokenizer.decode(tokenizer.encode(train_dataset[0])).split()
+        != train_dataset[0].split()
     ):
       raise ValueError(
-          "Encoding and then decoding a sentence does not produce the"
-          " original text."
+          "Encoding and then decoding a sentence does not produce the original"
+          " text."
       )
 
   except ValueError as e:
     render_feedback(e, hint)
 
   else:
-    print("✅ Nice! Your answer looks correct.")
+    print("✅ Nice! The tokenizer seems to be working correctly.")

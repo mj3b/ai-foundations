@@ -19,21 +19,23 @@ This module contains a function to instantiate a Gemma model and load its
 corresponding tokenizer and pre-trained weights.
 """
 
-from typing import Any, Mapping, Tuple
+from typing import Any, Literal, Mapping, Tuple
 
 from gemma import gm
 
 
 def load_gemma(
-    model_name: str = "Gemma-1B"
-) -> Tuple[gm.text.Gemma3Tokenizer,
-           gm.nn.Gemma3_1B | gm.nn.Gemma3_4B,
-           Mapping[str, Any]]:
+    model_name: Literal["Gemma-1B", "Gemma-4B"] = "Gemma-1B",
+) -> Tuple[
+    gm.text.Gemma3Tokenizer,
+    gm.nn.Gemma3_1B | gm.nn.Gemma3_4B,
+    Mapping[str, Any]
+]:
   """Loads a Gemma model and its associated tokenizer and parameters.
 
   Args:
-    model_name: The name of the Gemma model to load. Options are: 'Gemma-1B'
-        and 'Gemma-4B'.
+    model_name: The name of the Gemma model to load. Options are: 'Gemma-1B' and
+        'Gemma-4B'.
 
   Returns:
     tokenizer: Tokenizer for the specified Gemma model.
@@ -55,8 +57,8 @@ def load_gemma(
     params = gm.ckpts.load_params(gm.ckpts.CheckpointPath.GEMMA3_4B_PT)
   else:
     raise ValueError(
-        f"Unsupported model name: {model_name}. "
-        "Please use 'Gemma-1B' or 'Gemma-4B'."
+        f"Unsupported model name: {model_name}."
+        " Please use 'Gemma-1B' or 'Gemma-4B'."
     )
 
   return tokenizer, model, params

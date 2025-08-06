@@ -13,9 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 
-"""Tests for n-gram model components."""
+"""Implementation of an n-gram model."""
 
-from .test_candidate_tokens import test_candidate_tokens
-from .test_ngram_counts import test_ngram_counts
-from .test_ngram_model import test_build_ngram_model
-from .test_ngrams import test_generate_ngrams
+from .model import NGramModel

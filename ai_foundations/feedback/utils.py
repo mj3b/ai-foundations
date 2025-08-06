@@ -29,11 +29,11 @@ display = IPython.display.display
 HTML = IPython.display.HTML
 
 
-def render_feedback(error: ValueError, hint: Optional[str] = None) -> None:
+def render_feedback(error: Exception, hint: Optional[str] = None):
   """Displays an error message and optionally asks to show a hint.
 
   Args:
-    error: The ValueError exception containing the feedback.
+    error: The Exception containing the feedback.
     hint: The optional hint string to display if the user agrees.
   """
 
@@ -50,7 +50,7 @@ def render_feedback(error: ValueError, hint: Optional[str] = None) -> None:
 
   # If a hint is provided, ask the user if they want to see it.
   if hint:
-    time.sleep(5)
+    time.sleep(1)
     give_hints = input("Would you like a hint? Type Yes or No. ")
     if give_hints.lower() in ["yes", "y"]:
       display(HTML(f"<h3>Hint:</h3><p>{hint}</p>"))

@@ -19,7 +19,7 @@ This module contains a function to create a bar chart of the most probable next
 tokens, given a model's output logits or probabilities.
 """
 
-from typing import Any
+from typing import Any, Dict, Optional
 
 import jax
 import jax.numpy as jnp
@@ -28,10 +28,10 @@ import plotly.express as px
 
 
 def plot_next_token(
-    probs_or_logits: np.ndarray,
-    tokenizer: Any,
+    probs_or_logits: np.ndarray | Dict[str, float],
     prompt: str,
-    keep_top: int = 30
+    keep_top: int = 30,
+    tokenizer: Optional[Any] = None
 ):
   """Plot the probability distribution of the next tokens.
 
@@ -40,13 +40,20 @@ def plot_next_token(
 
   Args:
     probs_or_logits: The raw logits output by the model or the probability
-        distribution for the next token prediction.
-    tokenizer: The tokenizer used to decode token IDs to human-readable text.
+        distribution for the next token prediction. Can also be a dictionary as
+        returned by an n-gram model.
     prompt: The input prompt used to generate the next token predictions.
     keep_top: The number of top tokens to display in the plot.
+    tokenizer: The tokenizer used to decode token IDs to human-readable text.
+
+  Returns:
+    Displays a plot showing the probability distribution of the top tokens.
   """
 
-  if np.isclose(probs_or_logits.sum(), 1):
+  if isinstance(probs_or_logits, dict):
+    # Extract probabilities from n-gram dictionary.
+    probs = jnp.array(list(probs_or_logits.values()))
+  elif np.isclose(probs_or_logits.sum(), 1):
     probs = probs_or_logits
   else:
     # Apply softmax to logits to get probabilities.
@@ -60,7 +67,16 @@ def plot_next_token(
 
   # Get the probabilities and corresponding tokens.
   probs = probs[indices].astype(np.float32)
-  tokens = [repr(tokenizer.decode(i.item())) for i in indices]
+
+  if tokenizer is not None:
+    # Decode indices using tokenizer.
+    tokens = [repr(tokenizer.decode(index.item())) for index in indices]
+  elif isinstance(probs_or_logits, dict):
+    # Extract tokens from n-gram dictionary.
+    tokens = list(probs_or_logits.keys())
+  else:
+    # Return the raw indices if no decoding information is supplied.
+    tokens = indices
 
   # Create the bar plot using Plotly.
   fig = px.bar(x=tokens, y=probs)
@@ -68,8 +84,7 @@ def plot_next_token(
   # Customize the plot layout.
   fig.update_layout(
       title=(
-          "Probability distribution of next "
-          f'tokens given the prompt="{prompt}"'
+          f'Probability distribution of next tokens given the prompt="{prompt}"'
       ),
       xaxis_title="Tokens",
       yaxis_title="Probability",

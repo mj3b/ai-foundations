@@ -23,16 +23,16 @@ from typing import Callable, List
 from ai_foundations.feedback.utils import render_feedback
 
 
-def test_build_vocab(build_vocab: Callable[[List[str]], List[str]]) -> None:
-  """Tests the learner's implementation of a `build_vocab` function.
+def test_build_vocabulary(build_vocabulary: Callable[[List[str]], List[str]]):
+  """Tests the learner's implementation of a `build_vocabulary` function.
 
-  This function validates that the provided `build_vocab` function correctly
-  converts a list of tokens into a list of unique tokens, ensuring the final
-  output is a list.
+  This function validates that the provided `build_vocabulary` function
+  correctly converts a list of tokens into a list of unique tokens, ensuring the
+  final output is a list.
 
   Args:
-    build_vocab: The learner's function to be tested. It should accept a list of
-        strings and return a list of unique strings.
+    build_vocabulary: The learner's function to be tested. It should accept a
+        list of strings and return a list of unique strings.
   """
 
   hint = """
@@ -40,25 +40,24 @@ def test_build_vocab(build_vocab: Callable[[List[str]], List[str]]) -> None:
        <code>['hello', 'world', 'world']</code>, it becomes
        <code>{'hello', 'world'}</code>.
        There is a Python <code>set</code> function you can use.<br>
-    2. Convert the set to list e.g <code>{'hello', 'world'}</code> becomes
+    2. Convert the set to a list e.g <code>{'hello', 'world'}</code> becomes
        <code>['hello', 'world']</code>. There is a Python <code>list</code>
        function that you can use.
     """
 
   try:
-    if isinstance(build_vocab(["hello", "world", "world"]), set):
+    if isinstance(build_vocabulary(["hello", "world", "world"]), set):
       raise ValueError(
           "Sorry, your answer is not correct.",
           "Make sure that you return a list, not a set.",
       )
-    if build_vocab(["hello", "world", "world"]) != [
+    if build_vocabulary(["hello", "world", "world"]) != [
         "hello",
         "world",
-    ] and build_vocab(["hello", "world", "world"]) != ["world", "hello"]:
+    ] and build_vocabulary(["hello", "world", "world"]) != ["world", "hello"]:
       raise ValueError(
           "Sorry, your answer is not correct.",
-          "Your function does not return the expected list of unique"
-          " words.",
+          "Your function does not return the expected list of unique words."
       )
 
   except ValueError as e:

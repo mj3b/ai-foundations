@@ -19,9 +19,9 @@ This module provides a high-level function to prompt a Gemma model, generate
 a text continuation, and retrieve the model's logits for the next token.
 """
 
-from typing import Any
+from typing import Any, Literal, Optional
 
-from ai_foundations.training import load_gemma
+from ai_foundations import generation
 from gemma import gm
 import jax.numpy as jnp
 import numpy as np
@@ -30,8 +30,11 @@ import numpy as np
 def prompt_transformer_model(
     input_text: str,
     max_new_tokens: int = 10,
-    model_name: str = "Gemma-1B",
-    do_sample: bool = True,
+    model_name: Literal["Gemma-1B", "Gemma-4B"] = "Gemma-1B",
+    sampling_mode: Literal["random", "greedy"] = "random",
+    loaded_model: Optional[
+        tuple[gm.text.Gemma3Tokenizer, gm.nn.Transformer, Any]
+    ] = None,
 ) -> tuple[str, np.ndarray, Any]:
   """Generate text from a transformer model (Gemma) based on the input text.
 
@@ -40,8 +43,10 @@ def prompt_transformer_model(
     max_new_tokens: The maximum number of new tokens to generate.
     model_name: The name of the model to load. Supported options are
         'Gemma-1B' and 'Gemma-4B'.
-    do_sample: Whether to use sampling for text generation (True for random
-        sampling, False for greedy).
+    sampling_mode: Whether to use random or greedy sampling. Supported options
+        are 'random' and 'greedy'.
+    loaded_model: A tuple containing the tokenizer, the model, and the
+        parameters to prevent re-loading of model on every prompt.
 
   Returns:
     output_text: The generated text, including the input text and the
@@ -53,24 +58,31 @@ def prompt_transformer_model(
     ValueError: If the model_name is not recognized or supported.
   """
 
-  if not isinstance(do_sample, bool):
-    raise TypeError("do_sample must be a boolean value.")
+  if sampling_mode not in ["random", "greedy"]:
+    raise ValueError(
+        f"Sampling mode {sampling_mode} is not supported. Supported options are"
+        " 'random' and 'greedy'."
+    )
 
   # Process for Gemma-based models.
   if model_name not in ["Gemma-1B", "Gemma-4B"]:
     raise ValueError(
-        f"model_name=`{model_name}` is not supported. "
-        "Supported options are 'Gemma-1B' and 'Gemma-4B'"
+        f"model_name=`{model_name}` is not supported."
+        " Supported options are 'Gemma-1B' and 'Gemma-4B'"
     )
 
-  tokenizer, model, params = load_gemma(model_name)
+  if loaded_model is None:
+    tokenizer, model, params = generation.load_gemma(model_name)
+  else:
+    tokenizer, model, params = loaded_model
+
   sampler = gm.text.Sampler(
       model=model,
       params=params,
       tokenizer=tokenizer,
   )
 
-  if not do_sample:
+  if sampling_mode == "greedy":
     sampler_output_text = sampler.sample(
         input_text, max_new_tokens=max_new_tokens, sampling=gm.text.Greedy()
     )

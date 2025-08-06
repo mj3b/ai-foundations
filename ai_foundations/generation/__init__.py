@@ -17,3 +17,4 @@
 
 from .gemma import prompt_transformer_model
 from .generate import generate_text
+from .loaders import load_gemma

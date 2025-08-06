@@ -54,7 +54,7 @@ class CustomMaskPadLoss(keras.losses.Loss):
   def call(self, y_true: jax.Array, y_pred: jax.Array) -> jax.Array:
     """Computes the custom loss.
 
-    The call funtion optionally masking the padding tokens and normalizing
+    The call function optionally masks the padding tokens and normalizes
     the loss by the number of non-masked tokens. The loss is computed using
     the SparseCategoricalCrossentropy loss function.
 

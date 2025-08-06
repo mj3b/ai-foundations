@@ -104,7 +104,7 @@ class TokenAndPositionEmbedding(layers.Layer):
       length: The length of the sequence (number of tokens).
       depth: The dimensionality of the encoding (must be even).
 
-    Yields:
+    Returns:
       A function that returns an array of shape (length, depth) representing
       the positional encoding. This is a function to make it compatible with the
       simple embedding layer.
@@ -127,7 +127,7 @@ class TokenAndPositionEmbedding(layers.Layer):
     def apply(*args) -> jax.Array:  # pylint: disable=unused-argument
       return pos_encoding_matrix[jnp.newaxis, :, :]
 
-    yield apply
+    return apply
 
   def call(self, x: jax.Array) -> jax.Array:
     """Applied and combines token embeddings with positional embeddings.
@@ -343,6 +343,8 @@ class MultiHeadSelfAttention(layers.Layer):
     # Apply self-attention. The mask is typically a look-ahead mask.
     attn_output = self.mha(query=x, value=x, key=x, use_causal_mask=True)
     attn_output = self.dropout(attn_output)
+
     # Add residual connection followed by layer normalization.
     output = self.layernorm(x + attn_output)
+
     return output

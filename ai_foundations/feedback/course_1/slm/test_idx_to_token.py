@@ -23,26 +23,26 @@ from typing import Dict, List
 from ai_foundations.feedback.utils import render_feedback
 
 
-def test_index_to_token(index_to_token: Dict[int, str], vocab: List[str]):
+def test_index_to_token(index_to_token: Dict[int, str], vocabulary: List[str]):
   """Tests if the index_to_token dictionary is implemented correctly.
 
   This function compares the learner's dictionary against a correctly
-  implemented solution to ensure it accurately maps a one-based index to each
+  implemented solution to ensure it accurately maps a zero-based index to each
   token from the provided vocabulary.
 
   Args:
     index_to_token: The learner's dictionary mapping an integer index to a
         token.
-    vocab: The list of vocabulary words to use for the mapping.
+    vocabulary: The list of vocabulary tokens to use for the mapping.
   """
 
-  correct_solution = {idx + 1: token for idx, token in enumerate(vocab)}
+  correct_solution = {idx: token for idx, token in enumerate(vocabulary)}
 
   hint = """
-    1. Create a dictionary where the key is <code>index + 1</code> and the value
+    1. Create a dictionary where the key is <code>index</code> and the value
        is <code>token</code>.<br>
     2. You can use the Python <code>enumerate</code> function to loop through
-       the vocab and get both the index and the token at the same time.
+       the vocabulary and get both the index and the token at the same time.
     """
 
   try:
@@ -55,8 +55,7 @@ def test_index_to_token(index_to_token: Dict[int, str], vocab: List[str]):
     if index_to_token != correct_solution:
       raise ValueError(
           "Sorry, your answer is not correct.",
-          "Your index-to-token mapping does not match the expected"
-          " solution.",
+          "Your index-to-token mapping does not match the expected solution."
       )
 
   except ValueError as e:

@@ -19,7 +19,7 @@ This module provides functions for autoregressive text generation, supporting
 both greedy decoding and random sampling methods.
 """
 
-from typing import Any
+from typing import Any, Literal
 
 import keras
 from keras import ops
@@ -57,7 +57,7 @@ def generate_text(
     model: keras.Model,
     tokenizer: Any,
     pad_token_id: int = 0,
-    do_sample: bool = False,
+    sampling_mode: Literal["random", "greedy"] = "random"
 ) -> tuple[str, list[np.ndarray]]:
   """Generate text based on a starting prompt using a trained model.
 
@@ -67,11 +67,19 @@ def generate_text(
     model: The trained model to use for text generation.
     tokenizer: The tokenizer to encode and decode text.
     pad_token_id: The token ID used for padding.
-    do_sample: Whether to sample from the distribution or use greedy decoding.
+    sampling_mode: Whether to use random or greedy sampling. Supported options
+        are 'random' and 'greedy'.
 
   Returns:
     The generated text after the prompt.
   """
+
+  if sampling_mode not in ["random", "greedy"]:
+    raise ValueError(
+        f"Sampling mode {sampling_mode} is not supported. Supported options are"
+        " 'random' and 'greedy'."
+    )
+
   max_length = model.layers[0].output.shape[1]
 
   # Tokenize the starting prompt.
@@ -88,23 +96,22 @@ def generate_text(
       x = start_tokens[:max_length]
       sample_index = max_length - 1
     elif pad_len > 0:
-      x = (
-          start_tokens + [pad_token_id] * pad_len
-      )  # Pad the input sequence.
+      x = start_tokens + [pad_token_id] * pad_len  # Pad the input sequence.
     else:
       x = start_tokens
 
     x = np.array([x])
+
     # Get predictions from the model.
     y = model.predict(x, verbose="0")
 
     # Apply softmax to convert logits to probabilities.
-    probabilities = ops.softmax(y, axis=-1).numpy()  # type: ignore
+    probabilities = ops.softmax(y, axis=-1).numpy()
 
     probs.append(probabilities[0][sample_index])
 
-    # Use greedy decoding or sampling based on the flag.
-    if not do_sample:
+    # Use greedy decoding or sampling based on sampling_mode.
+    if sampling_mode == "greedy":
       sample_token = greedy_decoding(probabilities[0][sample_index])
     else:
       sample_token = sampling(probabilities[0][sample_index])

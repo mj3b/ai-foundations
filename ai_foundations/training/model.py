@@ -25,6 +25,7 @@ from typing import Literal
 from ai_foundations.training.losses import CustomMaskPadLoss
 from ai_foundations.transformers import TokenAndPositionEmbedding
 from ai_foundations.transformers import TransformerBlock
+
 import keras
 from keras import layers
 
@@ -36,8 +37,8 @@ def create_model(
     mlp_dim: int = 256,
     num_heads: int = 2,
     num_blocks: int = 1,
-    optimizer: str = "adamw",
-    learning_rate: float = 1e-4,
+    optimizer: Literal["adamw", "sgd"] = "adamw",
+    learning_rate: float = 5e-4,
     dropout_rate: float = 0.0,
     activation_function: str = "relu",
     pad_token_id: int = 0,
@@ -68,7 +69,7 @@ def create_model(
     num_heads: The number of attention heads in the multi-head attention
         mechanism.
     num_blocks: The number of transformer blocks to stack in the model.
-    optimizer: The optimizer to use for training, either 'adamw' ('Adam with
+    optimizer: The optimizer to use for training, either 'adamw' (Adam with
         weight decay) or 'sgd'.
     learning_rate: The learning rate for the optimizer.
     dropout_rate: The dropout rate to prevent overfitting.
@@ -100,7 +101,7 @@ def create_model(
         num_heads,
         mlp_dim,
         dropout_rate=dropout_rate,
-        activation=activation_function,
+        activation_function=activation_function,
     )
     x = transformer_block(x)
 
@@ -146,6 +147,4 @@ def get_optimizer(
         gradient_accumulation_steps=None,
     )
   else:
-    raise NotImplementedError(
-        f"Optimizer {optimizer_name} is not implemented."
-    )
+    raise NotImplementedError(f"Optimizer {optimizer_name} is not implemented.")
