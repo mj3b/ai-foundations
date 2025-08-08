@@ -15,8 +15,8 @@
 
 """A class to build an n-gram model.
 
-This module provides a class `NGramModel` that estimates
-an unsmoothed n-gram model from a corpus of strings.
+This module provides a class `NGramModel` that estimates an unsmoothed n-gram
+model from a corpus of strings.
 """
 
 import collections
@@ -34,27 +34,27 @@ class NGramModel:
   can generate new text based on those learned probabilities.
 
   Attributes:
-    dataset: A list of strings representing the training documents.
     n: The order of the n-gram model (e.g., 2 for bigram, 3 for trigram).
     probabilities: A nested dictionary where the outer key is the context (an
         n-1 gram tuple) and the value is another dictionary. This inner
         dictionary's keys are possible next tokens and its values are their
         probabilities.
-    space_tokenize: A function that takes a string and returns a list of tokens.
+    tokenize_function: A function that takes a string and returns a list of
+        tokens.
   """
 
   def __init__(
       self,
       dataset: list[str],
       n: int,
-      space_tokenize: Callable[[str], list[str]] | None = None,
+      tokenize_function: Callable[[str], list[str]] | None = None,
   ):
     """Initializes the NGramModel.
 
     Args:
       dataset: A list of strings representing the training documents.
       n: The order of the n-gram model (e.g., 2 for bigram, 3 for trigram).
-      space_tokenize: A function that takes a string and returns a list of
+      tokenize_function: A function that takes a string and returns a list of
           tokens.
 
     Raises:
@@ -68,10 +68,10 @@ class NGramModel:
       return text.split(" ")
 
     self.n = n
-    if space_tokenize is None:
-      space_tokenize = _space_tokenize
+    if tokenize_function is None:
+      tokenize_function = _space_tokenize
 
-    self.space_tokenize = space_tokenize
+    self.tokenize_function = tokenize_function
     self.probabilities = {}
     self.estimate_probabilities(dataset)
 
@@ -92,7 +92,7 @@ class NGramModel:
     ngram_counts = DefaultDict(Counter)
 
     for text in dataset:
-      tokens = self.space_tokenize(text)
+      tokens = self.tokenize_function(text)
       if len(tokens) < self.n:
         continue  # Skip texts that are too short to form an n-gram.
 
@@ -151,7 +151,7 @@ class NGramModel:
           " are 'random' and 'greedy'."
       )
 
-    tokens = self.space_tokenize(prompt)
+    tokens = self.tokenize_function(prompt)
 
     if len(tokens) < self.n - 1:
       print(

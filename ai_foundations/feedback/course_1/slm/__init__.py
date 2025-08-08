@@ -16,7 +16,7 @@
 """Tests for tokenizer exercises."""
 
 from .test_build_tokens_list import test_build_tokens_list
-from .test_build_vocabulary import test_build_vocab
+from .test_build_vocabulary import test_build_vocabulary
 from .test_idx_to_token import test_index_to_token
 from .test_max_min_seqlen import test_max_min_seqlen
 from .test_simple_word_tokenizer import test_simple_word_tokenizer
