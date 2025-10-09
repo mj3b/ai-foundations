@@ -26,9 +26,7 @@ from ai_foundations.feedback.utils import render_feedback
 import numpy as np
 
 
-def test_probabilities(
-    candidate_words: List[str], learner_probs: List[float]
-):
+def test_probabilities(candidate_words: List[str], learner_probs: List[float]):
   """Tests if `learner_probs` is a proper probability distribution.
 
   Conditions checked (in order):

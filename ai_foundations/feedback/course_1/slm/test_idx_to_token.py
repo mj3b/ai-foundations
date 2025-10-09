@@ -32,7 +32,7 @@ def test_index_to_token(index_to_token: Dict[int, str], vocabulary: List[str]):
 
   Args:
     index_to_token: The learner's dictionary mapping an integer index to a
-        token.
+      token.
     vocabulary: The list of vocabulary tokens to use for the mapping.
   """
 
@@ -55,7 +55,7 @@ def test_index_to_token(index_to_token: Dict[int, str], vocabulary: List[str]):
     if index_to_token != correct_solution:
       raise ValueError(
           "Sorry, your answer is not correct.",
-          "Your index-to-token mapping does not match the expected solution."
+          "Your index-to-token mapping does not match the expected solution.",
       )
 
   except ValueError as e:

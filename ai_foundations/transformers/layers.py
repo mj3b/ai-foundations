@@ -44,12 +44,12 @@ class TokenAndPositionEmbedding(layers.Layer):
 
   Attributes:
     max_length: The maximum expected sequence length. This determines the range
-        of positional embeddings.
+      of positional embeddings.
     vocabulary_size: The size of the vocabulary. This determines the size of the
-        token embedding matrix.
+      token embedding matrix.
     embedding_dim: The dimensionality of the token and positional embeddings.
     positional_embedding_type: The type of positional embedding to use. It can
-        be 'simple' or 'sinusoidal'.
+      be 'simple' or 'sinusoidal'.
 
   Call Arguments:
     x: Input tensor of shape (batch_size, sequence_length).
@@ -64,7 +64,7 @@ class TokenAndPositionEmbedding(layers.Layer):
       max_length: int,
       vocabulary_size: int,
       embedding_dim: int,
-      positional_embedding_type: str = "sinusoidal"
+      positional_embedding_type: str = "sinusoidal",
   ):
     super().__init__()
 
@@ -173,15 +173,15 @@ class TransformerBlock(layers.Layer):
 
   Attributes:
     embedding_dim: The dimensionality of the input embedding (also the output
-        size of the attention layer).
+      size of the attention layer).
     num_heads: The number of attention heads in the multi-head attention
-        mechanism.
+      mechanism.
     mlp_dim: The number of units in the feed-forward network.
     dropout_rate: Dropout rate, between 0 and 1.
     activation_function: The activation function to use in the feed-forward
-        network.
+      network.
     seed: Random seed for dropout and attention layers to ensure
-        reproducibility.
+      reproducibility.
 
   Call Arguments:
     inputs: Input tensor of shape (batch_size, sequence_length, d_model).
@@ -197,7 +197,7 @@ class TransformerBlock(layers.Layer):
       num_heads: int,
       mlp_dim: int,
       dropout_rate: float = 0.0,
-      activation_function: str = "relu"
+      activation_function: str = "relu",
   ):
     super().__init__()
 
@@ -245,9 +245,9 @@ class FeedForwardNetwork(layers.Layer):
   Attributes:
     embedding_dim: The dimensionality of the embedding space.
     mlp_dim: The dimensionality of the hidden layer in the feedforward network
-        (often larger than embedding_dim).
+      (often larger than embedding_dim).
     dropout_rate: The dropout rate applied to the output of the feedforward
-        network.
+      network.
     activation_function: The activation function used in the first dense layer.
 
   Call Arguments:
@@ -263,7 +263,7 @@ class FeedForwardNetwork(layers.Layer):
       embedding_dim: int,
       mlp_dim: int,
       dropout_rate: float = 0.0,
-      activation: str = "relu"
+      activation: str = "relu",
   ):
     super().__init__()
     # Define a two-layer feedforward network.
@@ -316,10 +316,7 @@ class MultiHeadSelfAttention(layers.Layer):
   """
 
   def __init__(
-      self,
-      embedding_dim: int,
-      num_heads: int,
-      dropout_rate: float = 0.0
+      self, embedding_dim: int, num_heads: int, dropout_rate: float = 0.0
   ):
     super().__init__()
 

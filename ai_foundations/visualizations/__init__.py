@@ -15,4 +15,12 @@
 
 """Visualization utilities for language model predictions."""
 
+from .attention_visualization import visualize_attention
+from .plots import plot_accuracy_curve
+from .plots import plot_data_and_decision_boundary
+from .plots import plot_data_and_mlp
+from .plots import plot_loss_curve
 from .plots import plot_next_token
+from .plots import plot_spiral_data
+from .plots import visualize_hyperparameter_loss
+from .plots import visualize_mlp_architecture

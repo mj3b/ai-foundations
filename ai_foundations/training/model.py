@@ -25,7 +25,6 @@ from typing import Literal
 from ai_foundations.training.losses import CustomMaskPadLoss
 from ai_foundations.transformers import TokenAndPositionEmbedding
 from ai_foundations.transformers import TransformerBlock
-
 import keras
 from keras import layers
 
@@ -61,22 +60,22 @@ def create_model(
 
   Args:
     vocabulary_size: The size of the vocabulary, i.e., the number of unique
-        tokens.
+      tokens.
     max_length: The maximum length of the input sequences.
     embedding_dim: The dimensionality of the embedding space.
     mlp_dim: The number of units in the feed-forward network of each transformer
-        block.
+      block.
     num_heads: The number of attention heads in the multi-head attention
-        mechanism.
+      mechanism.
     num_blocks: The number of transformer blocks to stack in the model.
     optimizer: The optimizer to use for training, either 'adamw' (Adam with
-        weight decay) or 'sgd'.
+      weight decay) or 'sgd'.
     learning_rate: The learning rate for the optimizer.
     dropout_rate: The dropout rate to prevent overfitting.
     activation_function: The activation function to use in the feed-forward
-        network of each transformer block.
+      network of each transformer block.
     pad_token_id: The ID used to represent padding tokens in the sequence. This
-        is used to mask padded tokens in the loss calculation.
+      is used to mask padded tokens in the loss calculation.
 
   Returns:
     The compiled Keras model which outputs the probability of the next token

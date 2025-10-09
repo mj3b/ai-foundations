@@ -39,7 +39,7 @@ def test_simple_word_tokenizer(
     tokenizer: The learner's custom tokenizer object to be tested.
     vocabulary: The expected list of vocabulary tokens.
     train_dataset: A list of sentences for testing the encode/decode
-        functionality.
+      functionality.
   """
 
   hint = """

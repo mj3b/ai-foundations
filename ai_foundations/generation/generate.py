@@ -19,26 +19,30 @@ This module provides functions for autoregressive text generation, supporting
 both greedy decoding and random sampling methods.
 """
 
+import random
 from typing import Any, Literal
 
+import jax
+import jax.numpy as jnp
 import keras
 from keras import ops
-import numpy as np
 
 
-def sampling(probs: np.ndarray) -> int:
+def sampling(probs: jax.Array, key: jax.Array) -> int:
   """Sample a token index from the predicted next token probability.
 
   Args:
     probs: The probability distribution of predicted next token.
+    key: The JAX random key.
 
   Returns:
     The index of the sampled token.
   """
-  return np.random.choice(np.arange(len(probs)), p=probs)
+  token_index = jax.random.choice(key, jnp.arange(probs.shape[0]), p=probs)
+  return int(token_index)
 
 
-def greedy_decoding(probs: np.ndarray) -> int:
+def greedy_decoding(probs: jax.Array) -> int:
   """Select the token index from the predicted next token probability.
 
   Args:
@@ -47,8 +51,7 @@ def greedy_decoding(probs: np.ndarray) -> int:
   Returns:
     The index of the token with the highest probability.
   """
-  predicted_index = np.argmax(probs).astype(int)
-  return predicted_index
+  return int(jnp.argmax(probs))
 
 
 def generate_text(
@@ -57,8 +60,8 @@ def generate_text(
     model: keras.Model,
     tokenizer: Any,
     pad_token_id: int = 0,
-    sampling_mode: Literal["random", "greedy"] = "random"
-) -> tuple[str, list[np.ndarray]]:
+    sampling_mode: Literal["random", "greedy"] = "random",
+) -> tuple[str, list[jax.Array]]:
   """Generate text based on a starting prompt using a trained model.
 
   Args:
@@ -68,7 +71,7 @@ def generate_text(
     tokenizer: The tokenizer to encode and decode text.
     pad_token_id: The token ID used for padding.
     sampling_mode: Whether to use random or greedy sampling. Supported options
-        are 'random' and 'greedy'.
+      are 'random' and 'greedy'.
 
   Returns:
     The generated text after the prompt.
@@ -80,6 +83,11 @@ def generate_text(
         " 'random' and 'greedy'."
     )
 
+  # Introduce randomness by re-intializing JAX RNG with a different seed on
+  # each call. While this harms reproducability, it avoids having to pass a JAX
+  # key on every call, which would likely be confusing to learners.
+  main_key = jax.random.PRNGKey(random.randint(0, 1000000))
+
   max_length = model.layers[0].output.shape[1]
 
   # Tokenize the starting prompt.
@@ -87,7 +95,7 @@ def generate_text(
 
   # Generate tokens.
   tokens_generated = start_tokens + []
-  probs: list[np.ndarray] = []
+  probs = []
   for _ in range(n_tokens):
     pad_len = max_length - len(start_tokens)
     sample_index = len(start_tokens) - 1
@@ -100,13 +108,13 @@ def generate_text(
     else:
       x = start_tokens
 
-    x = np.array([x])
+    x = jnp.array([x])
 
     # Get predictions from the model.
     y = model.predict(x, verbose="0")
 
     # Apply softmax to convert logits to probabilities.
-    probabilities = ops.softmax(y, axis=-1).numpy()
+    probabilities = ops.softmax(y, axis=-1)
 
     probs.append(probabilities[0][sample_index])
 
@@ -114,7 +122,8 @@ def generate_text(
     if sampling_mode == "greedy":
       sample_token = greedy_decoding(probabilities[0][sample_index])
     else:
-      sample_token = sampling(probabilities[0][sample_index])
+      key, main_key = jax.random.split(main_key)
+      sample_token = sampling(probabilities[0][sample_index], key)
 
     tokens_generated.append(sample_token)
     start_tokens.append(sample_token)

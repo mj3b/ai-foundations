@@ -39,7 +39,7 @@ class CustomMaskPadLoss(keras.losses.Loss):
   Attributes:
     name: The name of the loss function, used by Keras.
     pad_token_id: The ID of the padding token. If provided, padding tokens will
-        be ignored during loss calculation. If None, no padding is masked.
+      be ignored during loss calculation. If None, no padding is masked.
     **kwargs: Additional keyword arguments.
   """
 

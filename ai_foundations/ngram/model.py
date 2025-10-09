@@ -36,11 +36,11 @@ class NGramModel:
   Attributes:
     n: The order of the n-gram model (e.g., 2 for bigram, 3 for trigram).
     probabilities: A nested dictionary where the outer key is the context (an
-        n-1 gram tuple) and the value is another dictionary. This inner
-        dictionary's keys are possible next tokens and its values are their
-        probabilities.
+      n-1 gram tuple) and the value is another dictionary. This inner
+      dictionary's keys are possible next tokens and its values are their
+      probabilities.
     tokenize_function: A function that takes a string and returns a list of
-        tokens.
+      tokens.
   """
 
   def __init__(
@@ -55,7 +55,7 @@ class NGramModel:
       dataset: A list of strings representing the training documents.
       n: The order of the n-gram model (e.g., 2 for bigram, 3 for trigram).
       tokenize_function: A function that takes a string and returns a list of
-          tokens.
+        tokens.
 
     Raises:
       ValueError if n < 2.
@@ -140,7 +140,7 @@ class NGramModel:
       num_tokens_to_generate: The number of tokens to generate.
       prompt: The initial string to start the generation from.
       sampling_mode: Whether to use random or greedy sampling. Supported options
-          are 'random' and 'greedy'.
+        are 'random' and 'greedy'.
 
     Returns:
       A string containing the prompt followed by the generated tokens.

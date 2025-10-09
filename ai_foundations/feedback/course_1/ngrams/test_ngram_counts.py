@@ -29,7 +29,7 @@ Counter = collections.Counter
 
 def test_ngram_counts(
     get_ngram_counts: Callable[[List[str], int], Dict[str, Counter[str]]],
-    generate_ngrams: Callable[[str, int], List[Tuple[str, ...]]]
+    generate_ngrams: Callable[[str, int], List[Tuple[str, ...]]],
 ):
   """Tests if the learner correctly implements the `get_ngram_counts` method.
 
@@ -38,9 +38,9 @@ def test_ngram_counts(
 
   Args:
       get_ngram_counts: The learner's implementation of the `get_ngram_counts`
-          function.
-      generate_ngrams: The `generate_ngrams` function that was defined in
-          the previous coding activity.
+        function.
+      generate_ngrams: The `generate_ngrams` function that was defined in the
+        previous coding activity.
   """
 
   def _reference_implementation(
@@ -58,7 +58,7 @@ def test_ngram_counts(
     Args:
         dataset: The list of text strings in the dataset.
         n: The size of the n-grams to generate (e.g., 2 for bigrams, 3 for
-            trigrams).
+          trigrams).
 
     Returns:
         A dictionary where keys are (n-1)-token contexts and values are Counter
@@ -105,10 +105,15 @@ def test_ngram_counts(
           " again.",
       )
 
-  except (KeyError, NameError, ReferenceError, RuntimeError, SyntaxError) as e:
+  except (
+      KeyError,
+      NameError,
+      ReferenceError,
+      RuntimeError,
+      SyntaxError,
+      ValueError,
+  ) as e:
     render_feedback(e)
 
   else:
     print("✅ Nice! Your implementation looks correct.")
-
-

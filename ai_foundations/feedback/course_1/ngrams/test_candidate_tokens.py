@@ -26,7 +26,7 @@ from ai_foundations.feedback.utils import render_feedback
 def test_candidate_tokens(
     trigram_model: Dict[str, Dict[str, float]],
     candidate_tokens: Iterable[str],
-    candidate_tokens_probabilities: Iterable[float]
+    candidate_tokens_probabilities: Iterable[float],
 ):
   """Tests if the learner correctly identifies candidate tokens from a model.
 
@@ -36,9 +36,9 @@ def test_candidate_tokens(
 
   Args:
     trigram_model: A dictionary representing the ngram model, mapping contexts
-        to a dictionary of candidate words and their probabilities.
-    candidate_tokens: A list of strings representing the learner's
-        identified candidate tokens.
+      to a dictionary of candidate words and their probabilities.
+    candidate_tokens: A list of strings representing the learner's identified
+      candidate tokens.
     candidate_tokens_probabilities: A list of corresponding token probabilities.
   """
 
@@ -77,7 +77,7 @@ def test_candidate_tokens(
       raise ValueError(
           "Your answer is not correct.",
           "Your list of probabilities does not match the expected"
-          " probabilities."
+          " probabilities.",
       )
 
   except (KeyError, NameError, RuntimeError, SyntaxError, ValueError) as e:

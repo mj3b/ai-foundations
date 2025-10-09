@@ -83,7 +83,7 @@ def test_generate_ngrams(
           "n-grams are not returned as tuples.",
           "Your implementation did not return a list of tuples. Make sure that"
           " your function returns a list of tuples and run this test"
-          " again."
+          " again.",
       )
 
     if (
@@ -98,7 +98,14 @@ def test_generate_ngrams(
           " correct. Check your function and run this test again.",
       )
 
-  except (RuntimeError, KeyError, SyntaxError, ReferenceError, NameError) as e:
+  except (
+      RuntimeError,
+      KeyError,
+      SyntaxError,
+      ReferenceError,
+      NameError,
+      ValueError,
+  ) as e:
     render_feedback(e)
 
   else:

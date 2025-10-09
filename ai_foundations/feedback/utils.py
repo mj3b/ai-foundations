@@ -40,13 +40,15 @@ def render_feedback(error: Exception, hint: Optional[str] = None):
   # Unpack the title and detail from the ValueError.
   if len(error.args) == 2:
     title, detail = error.args
+  elif isinstance(error.args[0], tuple) and len(error.args[0]) == 2:
+    title, detail = error.args[0]
   else:
     # Handle cases where the error has only one argument.
     title = "Sorry, your answer is not correct."
     detail = str(error)
 
   # Display the primary error message.
-  display(HTML(f"<h3>{title}</h3><p>{detail}</p>"))
+  display(HTML(f"<h3>❌ {title}</h3><p>{detail}</p>"))
 
   # If a hint is provided, ask the user if they want to see it.
   if hint:

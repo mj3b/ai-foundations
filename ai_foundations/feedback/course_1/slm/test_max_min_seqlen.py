@@ -13,7 +13,6 @@
 # limitations under the License.
 # ==============================================================================
 
-
 """A utility function to test the max and min sequence length computation.
 
 This module provides a function to test a learner's computation of the maximum
@@ -33,12 +32,12 @@ def test_max_min_seqlen(
   """Tests if the paragraph length variables are set correctly.
 
   Args:
-    shortest_paragraph_length: The learner's result for computing the length
-        of the shortest paragraph.
-    longest_paragraph_length: The learner's result for computing the length
-        of the longest paragraph.
+    shortest_paragraph_length: The learner's result for computing the length of
+      the shortest paragraph.
+    longest_paragraph_length: The learner's result for computing the length of
+      the longest paragraph.
     encoded_tokens: A list of list of token IDs where each list corresponds to
-        the token IDs of one paragraph.
+      the token IDs of one paragraph.
   """
 
   target_min_para_len = len(min(encoded_tokens, key=len))

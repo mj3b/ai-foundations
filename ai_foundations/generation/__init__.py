@@ -15,6 +15,9 @@
 
 """Text generation and inference utilities for language models."""
 
+from .gemma import prompt_attention_transformer_model
 from .gemma import prompt_transformer_model
 from .generate import generate_text
+from .generate import greedy_decoding
+from .generate import sampling as random_decoding
 from .loaders import load_gemma

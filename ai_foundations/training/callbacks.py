@@ -20,11 +20,14 @@ This module defines the TextGenerator callback, which can be used with
 printing sample text at the end of specified epochs.
 """
 
-from typing import Any, Dict, List
+import random
+from typing import Any, Dict, List, Optional
 
+from ai_foundations import generation
+import jax
+import jax.numpy as jnp
 import keras
 from keras import ops
-import numpy as np
 
 
 class TextGenerator(keras.callbacks.Callback):
@@ -60,30 +63,6 @@ class TextGenerator(keras.callbacks.Callback):
     self.print_every = print_every
     self.pad_token_id = pad_token_id  # ID for padding token.
 
-  def greedy_decoding(self, probs: np.ndarray) -> int:
-    """Select the token index with the highest probability.
-
-    Args:
-      probs: The probability distribution of next token prediction.
-
-    Returns:
-      The index of the predicted token with the highest probability.
-    """
-    predicted_index = np.argmax(probs).astype(int)
-    return predicted_index
-
-  def sampling(self, probs: np.ndarray) -> int:
-    """Sample a token index from the predicted next token probability.
-
-    Args:
-      probs: The probability distribution of predicted next token.
-
-    Returns:
-      The index of the sampled token.
-    """
-
-    return np.random.choice(np.arange(len(probs)), p=probs)
-
   def on_epoch_end(
       self, epoch: int, logs: Dict[str, Any] | None = None
   ) -> None:
@@ -104,7 +83,12 @@ class TextGenerator(keras.callbacks.Callback):
       return
 
     num_tokens_generated = 0
-    tokens_generated: list[int] = []
+    tokens_generated = []
+
+    # Introduce randomness by re-intializing JAX RNG with a different seed on
+    # each call. While this harms reproducability, it avoids having to pass a
+    # JAX key on every call, which would likely be confusing to learners.
+    main_key = jax.random.PRNGKey(random.randint(0, 1000000))
 
     while num_tokens_generated < self.max_tokens:
       pad_len = max_length - len(start_tokens)
@@ -119,13 +103,16 @@ class TextGenerator(keras.callbacks.Callback):
       else:
         x = start_tokens
 
-      x = np.array([x])
+      x = jnp.array([x])
       y = self.model.predict(x, verbose=0)
 
       # Convert logits to probabilities using softmax.
-      probabilities = ops.softmax(y, axis=-1).numpy()
+      probabilities = ops.softmax(y, axis=-1)
 
-      sample_token = self.sampling(probabilities[0][sample_index])
+      key, main_key = jax.random.split(main_key)
+      sample_token = generation.random_decoding(
+          probabilities[0][sample_index], key
+      )
 
       tokens_generated.append(sample_token)
       start_tokens.append(sample_token)
@@ -138,3 +125,49 @@ class TextGenerator(keras.callbacks.Callback):
     # Decode and print the generated text.
     txt = self.tokenizer.decode(output_tokens)
     print("Generated text:\n", txt, "\n")
+
+
+class CustomAccuracyPrinter(keras.callbacks.Callback):
+  """Custom Keras callback function to print training progress in Lab 3.12.
+
+  Attributes:
+    print_every: Print the training progress every `print_every` epochs.
+  """
+
+  def __init__(self, print_every: int = 1):
+    self.print_every = print_every
+
+  def on_epoch_end(
+      self, epoch: int, logs: Optional[Dict[str, Any]] = None
+  ) -> None:
+    """Prints training and validation metrics at the end of each epoch.
+
+    This function is executed at the end of each epoch. It prints the
+    training loss and the validation loss and training and validation
+    accuracies, if available. If self.print_every is greater than 1,
+    updates are only printed every self.print_every epoch.
+
+    Note that at this stage, learners have not learned the difference between
+    validation and test sets and therefore validation loss and validation
+    accuracy is renamed to test loss and test accuracy.
+
+    Args:
+      epoch: The current epoch number.
+      logs: A dictionary containing the current loss and any other metrics that
+        were specified when compiling the model.
+    """
+
+    if (epoch + 1) % self.print_every != 0:
+      return
+
+    if logs is not None:
+      log_parts = []
+      log_parts.append(f"Epoch {epoch}: Training loss: {logs['loss']:.5f}")
+      if "accuracy" in logs:
+        log_parts.append(f"training accuracy: {logs['accuracy']*100:.2f}%")
+      if "val_loss" in logs:
+        log_parts.append(f"test loss: {logs['val_loss']:.5f}")
+      if "val_accuracy" in logs:
+        log_parts.append(f"test accuracy: {logs['val_accuracy']*100:.2f}%")
+
+      print(", ".join(log_parts))

@@ -29,7 +29,7 @@ Counter = collections.Counter
 
 def test_build_ngram_model(
     build_ngram_model: Callable[[List[str], int], Dict[str, Dict[str, float]]],
-    get_ngram_counts: Callable[[List[str], int], Dict[str, Counter[str]]]
+    get_ngram_counts: Callable[[List[str], int], Dict[str, Counter[str]]],
 ):
   """Tests if the learner correctly implements the `build_ngram_model` method.
 
@@ -38,9 +38,9 @@ def test_build_ngram_model(
 
   Args:
     build_ngram_model: The learner's implementation of the `build_ngram_model`
-          function.
-    get_ngram_counts: The `get_ngram_counts` function that was defined in
-          the previous coding activity.
+      function.
+    get_ngram_counts: The `get_ngram_counts` function that was defined in the
+      previous coding activity.
   """
 
   def _reference_implementation(
@@ -114,7 +114,14 @@ def test_build_ngram_model(
           " context).<br>Please check your solution and run this test again.",
       )
 
-  except (NameError, KeyError, ReferenceError, RuntimeError, SyntaxError) as e:
+  except (
+      NameError,
+      KeyError,
+      ReferenceError,
+      RuntimeError,
+      SyntaxError,
+      ValueError,
+  ) as e:
     render_feedback(e)
 
   else:

@@ -57,7 +57,7 @@ def test_build_tokens_list(
       raise ValueError(
           "Sorry, your answer is not correct.",
           "`tokens` does not include all tokens from the dataset in the"
-          " correct order."
+          " correct order.",
       )
 
   except ValueError as e:

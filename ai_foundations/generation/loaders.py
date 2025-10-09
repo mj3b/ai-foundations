@@ -21,21 +21,24 @@ corresponding tokenizer and pre-trained weights.
 
 from typing import Any, Literal, Mapping, Tuple
 
+from ai_foundations import attention
 from gemma import gm
 
 
 def load_gemma(
-    model_name: Literal["Gemma-1B", "Gemma-4B"] = "Gemma-1B",
+    model_name: Literal[
+        "Gemma-1B", "Gemma-4B", "Gemma-1B-AttentionWeight"
+    ] = "Gemma-1B",
 ) -> Tuple[
     gm.text.Gemma3Tokenizer,
     gm.nn.Gemma3_1B | gm.nn.Gemma3_4B,
-    Mapping[str, Any]
+    Mapping[str, Any],
 ]:
   """Loads a Gemma model and its associated tokenizer and parameters.
 
   Args:
     model_name: The name of the Gemma model to load. Options are: 'Gemma-1B' and
-        'Gemma-4B'.
+      'Gemma-4B'.
 
   Returns:
     tokenizer: Tokenizer for the specified Gemma model.
@@ -46,10 +49,13 @@ def load_gemma(
     ValueError: If an unsupported model name is provided.
   """
 
-  # Model loading based on model_name
-  if model_name == "Gemma-1B":
+  # Model loading based on model_name.
+  if model_name in ["Gemma-1B", "Gemma-1B-AttentionWeight"]:
     tokenizer = gm.text.Gemma3Tokenizer()
-    model = gm.nn.Gemma3_1B()
+    if model_name == "Gemma-1B":
+      model = gm.nn.Gemma3_1B()
+    else:
+      model = attention.AttentionWeightGemma3_1B()
     params = gm.ckpts.load_params(gm.ckpts.CheckpointPath.GEMMA3_1B_PT)
   elif model_name == "Gemma-4B":
     tokenizer = gm.text.Gemma3Tokenizer()
@@ -58,7 +64,7 @@ def load_gemma(
   else:
     raise ValueError(
         f"Unsupported model name: {model_name}."
-        " Please use 'Gemma-1B' or 'Gemma-4B'."
+        " Please use 'Gemma-1B', 'Gemma-4B', or 'Gemma-1B-AttentionWeight'."
     )
 
   return tokenizer, model, params

@@ -32,7 +32,7 @@ def test_build_vocabulary(build_vocabulary: Callable[[List[str]], List[str]]):
 
   Args:
     build_vocabulary: The learner's function to be tested. It should accept a
-        list of strings and return a list of unique strings.
+      list of strings and return a list of unique strings.
   """
 
   hint = """
@@ -57,7 +57,7 @@ def test_build_vocabulary(build_vocabulary: Callable[[List[str]], List[str]]):
     ] and build_vocabulary(["hello", "world", "world"]) != ["world", "hello"]:
       raise ValueError(
           "Sorry, your answer is not correct.",
-          "Your function does not return the expected list of unique words."
+          "Your function does not return the expected list of unique words.",
       )
 
   except ValueError as e:
