@@ -29,6 +29,7 @@ import pandas as pd
 import plotly.express as px
 
 
+Counter = collections.Counter
 namedtuple = collections.namedtuple
 
 COLOR_PALETTE = ["#FFC20A", "#0C7BDC", "#71A816"]
@@ -109,6 +110,59 @@ def plot_next_token(
 
   # Display the plot.
   fig.show()
+
+
+def plot_word_frequencies(token_counts: Counter[str]):
+  """Plot the token frequencies of a token_counts Counter.
+
+  Args:
+    token_counts: A collections.Counter object of tokens and their frequencies.
+  """
+
+  # Create an array of ranks from 1 to the total number of unique words. The
+  # most frequent word has rank 1, the second most frequent has rank 2, etc.
+  ranks = jnp.arange(1, len(token_counts) + 1)
+
+  # Extract frequency values from the token_counts dictionary.
+  frequencies = jnp.array([freq for _, freq in token_counts.most_common()])
+
+  # Extract unique tokens from the token_counts dictionary.
+  words = [word for word, _ in token_counts.most_common()]
+
+  plt.figure(figsize=(10, 8))
+  fontsize = 14
+
+  # Create the log-log plot.
+  plt.loglog(ranks, frequencies, marker="o", linestyle="none", label="word")
+
+  # Annotate the first five most frequent words.
+  for i in range(min(5, len(words))):
+    rank, frequency = float(ranks[i]), float(frequencies[i])
+    plt.annotate(words[i], (rank, frequency), fontsize=fontsize, ha="right")
+
+  # Annotate the five least frequent words, with offset to avoid overlap.
+  for i in range(max(0, len(words) - 5), len(words)):
+    rank, frequency = float(ranks[i]), float(frequencies[i])
+    plt.annotate(
+        words[i],
+        (rank, frequency),
+        fontsize=fontsize,
+        ha="right",
+        va="bottom",  # Align text vertically to the bottom.
+        xytext=(0, (i - (len(words) - 5)) * 20),  # Offset vertically.
+        textcoords="offset points",
+    )  # Offset relative to the point.
+
+  # Label the axes and add a title.
+  plt.xlabel("Rank $r$ of word (log scale)", fontsize=fontsize)
+  plt.ylabel("Frequency $f$ of word (log scale)", fontsize=fontsize)
+  plt.title(
+      "Frequency vs. Rank of Tokens in the Africa Galore Dataset",
+      fontsize=fontsize,
+  )
+  _ = plt.legend(fontsize=fontsize)  # Display the legend.
+
+  plt.show()
 
 
 def plot_data_and_decision_boundary(

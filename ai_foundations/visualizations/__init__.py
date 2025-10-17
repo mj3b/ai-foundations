@@ -22,5 +22,6 @@ from .plots import plot_data_and_mlp
 from .plots import plot_loss_curve
 from .plots import plot_next_token
 from .plots import plot_spiral_data
+from .plots import plot_word_frequencies
 from .plots import visualize_hyperparameter_loss
 from .plots import visualize_mlp_architecture
